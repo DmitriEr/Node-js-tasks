@@ -1,6 +1,33 @@
-const getAll = async () => {
-  // TODO: mock implementation. should be replaced during task development
-  return [];
+const DB = require('../../common/dataBase');
+const USER_NAME = 'Users';
+
+const getAll = async () => DB.getAllEntities(USER_NAME);
+
+const get = async id => {
+  const user = DB.getEntity(USER_NAME, id);
+  if (!user) {
+    console.error(`User ${id} doesn't exist`);
+    return false;
+  }
+  return user;
 };
 
-module.exports = { getAll };
+const remove = async id => {
+  if (!(await DB.removeEntity(USER_NAME, id))) {
+    console.error(`User ${id} doesn't exist`);
+    return false;
+  }
+  return true;
+};
+
+const save = async user => DB.saveEntity(USER_NAME, user);
+
+const update = async (id, user) => {
+  const entity = await DB.updateEntity(USER_NAME, id, user);
+  if (!entity) {
+    throw new Error(`User ${id} doesn't exist`);
+  }
+  return user;
+};
+
+module.exports = { getAll, get, remove, save, update };
