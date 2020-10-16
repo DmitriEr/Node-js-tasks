@@ -25,8 +25,8 @@ app.use('/users', userRouter);
 
 app.use('/boards', boardRouter);
 
-app.use(
-  '/boards/:id/tasks',
+boardRouter.use(
+  '/:id/tasks',
   (req, res, next) => {
     req.boardId = req.params.id;
     next();

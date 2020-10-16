@@ -1,5 +1,6 @@
 const Board = require('../resources/boards/board.model');
 const User = require('../resources/users/user.model');
+const Task = require('../resources/tasks/task.model');
 
 const DB = {
   Users: [],
@@ -7,19 +8,22 @@ const DB = {
   Tasks: []
 };
 
+DB.Users.push(new User());
 DB.Boards.push(new Board());
-DB.Boards.push(new User());
+DB.Tasks.push(new Task());
 
 const getAllEntities = type => DB[type];
 
-const getEntity = (type, id) => DB[type].find(item => item.id === id);
+const getEntity = (type, id) => DB[type].find(entity => entity.id === id);
 
 const removeEntity = (type, id) => {
-  const newEntities = DB[type].filter(item => item.id !== id);
+  const newEntities = DB[type].filter(entity => entity.id !== id);
 
   if (newEntities.length < DB[type].length) {
     DB[type] = newEntities;
+    return true;
   }
+  return false;
 };
 
 const createEntity = (type, entity) => {
@@ -28,17 +32,15 @@ const createEntity = (type, entity) => {
 };
 
 const updateEntity = (type, id, data) => {
-  const result = DB[type].find(item => item.id === id);
-
+  const result = DB[type].find(entity => entity.id === id);
   if (!result) {
-    throw new Error("User don't update");
+    return;
   }
-
-  const entity = { ...result, ...data };
-  const entities = DB[type].filter(item => item.id !== id);
-  entities.push(entity);
-  DB[type] = entities;
-  return entity;
+  const newEntity = { ...result, ...data };
+  const newEntities = DB[type].filter(entity => entity.id !== id);
+  newEntities.push(newEntity);
+  DB[type] = newEntities;
+  return newEntity;
 };
 
 module.exports = {
