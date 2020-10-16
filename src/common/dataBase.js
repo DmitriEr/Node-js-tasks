@@ -1,8 +1,14 @@
+const Board = require('../resources/boards/board.model');
+const User = require('../resources/users/user.model');
+
 const DB = {
   Users: [],
   Boards: [],
   Tasks: []
 };
+
+DB.Boards.push(new Board());
+DB.Boards.push(new User());
 
 const getAllEntities = type => DB[type];
 
@@ -16,7 +22,7 @@ const removeEntity = (type, id) => {
   }
 };
 
-const saveEntity = (type, entity) => {
+const createEntity = (type, entity) => {
   DB[type].push(entity);
   return entity;
 };
@@ -39,6 +45,6 @@ module.exports = {
   getAllEntities,
   getEntity,
   removeEntity,
-  saveEntity,
+  createEntity,
   updateEntity
 };

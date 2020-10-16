@@ -6,8 +6,8 @@ const get = id => usersRepo.get(id);
 
 const remove = async id => usersRepo.remove(id);
 
-const save = user => usersRepo.save(user);
+const create = user => usersRepo.create(user);
 
 const update = (id, user) => usersRepo.update(id, user);
 
-module.exports = { getAll, get, remove, save, update };
+module.exports = { getAll, get, remove, create, update };

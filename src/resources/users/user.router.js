@@ -17,7 +17,7 @@ router.route('/:id').get(async (req, res) => {
 });
 
 router.route('/').post(async (req, res) => {
-  const user = await usersService.save(
+  const user = await usersService.create(
     new User({
       login: req.body.login,
       password: req.body.password,

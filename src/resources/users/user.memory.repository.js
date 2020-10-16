@@ -20,7 +20,7 @@ const remove = async id => {
   return true;
 };
 
-const save = async user => DB.saveEntity(USER_NAME, user);
+const create = async user => DB.createEntity(USER_NAME, user);
 
 const update = async (id, user) => {
   const entity = await DB.updateEntity(USER_NAME, id, user);
@@ -30,4 +30,4 @@ const update = async (id, user) => {
   return user;
 };
 
-module.exports = { getAll, get, remove, save, update };
+module.exports = { getAll, get, remove, create, update };
