@@ -9,7 +9,6 @@ const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
 const taskRouter = require('./resources/tasks/task.router');
 const { logger, errorHandler } = require('./resources/middleware');
-// const errorHandler = require('./resources/middleware/error');
 
 const app = express();
 
