@@ -31,4 +31,11 @@ const logger = winston.createLogger({
   ]
 });
 
-module.exports = { winston: logger };
+const errorHandler = (err, req, res) => {
+  logger.error(err.message, err);
+
+  res.status(500).send('err');
+  res.render(err, { error: err });
+};
+
+module.exports = { logger, errorHandler };

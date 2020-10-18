@@ -3,19 +3,32 @@ const morgan = require('morgan');
 const { finished } = require('stream');
 const swaggerUI = require('swagger-ui-express');
 const path = require('path');
+const { createWriteStream } = require('fs');
 const YAML = require('yamljs');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
 const taskRouter = require('./resources/tasks/task.router');
-const { winston } = require('./resources/logging/logging');
-const { createWriteStream } = require('fs');
+const { logger, errorHandler } = require('./resources/middleware');
+// const errorHandler = require('./resources/middleware/error');
 
 const app = express();
+
+process.on('uncaughtException ', err => {
+  // сообщение в папке - logs/error.log
+  logger.error(err.message);
+});
+
+process.on('unhandledRejection', err => {
+  console.log(`\nError: ${err.message}\n`);
+});
+
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
 
 app.use(express.json());
+
 // console
 app.use(morgan('dev'));
+
 // file
 app.use(morgan('combined', { stream: createWriteStream('./logs/access.log') }));
 
@@ -27,7 +40,8 @@ app.use('/', (req, res, next) => {
     return;
   }
   const { method, url, body, params } = req;
-  winston.info({ method, url, body, params });
+  // сообщение в папке - logs/info.log
+  logger.info({ method, url, body, params });
 
   next();
 
@@ -60,5 +74,7 @@ boardRouter.use(
   },
   taskRouter
 );
+
+app.use(errorHandler);
 
 module.exports = app;
