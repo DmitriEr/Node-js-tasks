@@ -23,19 +23,20 @@ const options = {
 
 const logger = winston.createLogger({
   level: 'info',
-  format: winston.format.json(),
+  format: winston.format.combine(
+    winston.format.colorize(),
+    winston.format.cli()
+  ),
   defaultMeta: { service: 'user-service' },
   transports: [
+    new winston.transports.Console(),
     new winston.transports.File(options.fileInfo),
     new winston.transports.File(options.fileError)
   ]
 });
 
-const errorHandler = (err, req, res) => {
-  logger.error(err.message, err);
-
-  res.status(500).send('err');
-  res.render(err, { error: err });
+const logInfo = req => {
+  logger.info(JSON.stringify(req.url, req.params, req.body));
 };
 
-module.exports = { logger, errorHandler };
+module.exports = { logger, logInfo };

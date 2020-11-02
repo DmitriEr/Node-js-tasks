@@ -1,13 +1,36 @@
-const { Task } = require('./task.model');
+const Task = require('./task.model');
 
-const getAll = async () => Task.find({});
+const getAll = () => Task.find({});
 
-const get = async id => Task.findById(id);
+const get = async boardId => Task.find({ boardId });
 
-const save = async board => Task.create(board);
+const getByBoard = async (boardId, taskId) => Task.findOne({ _id: taskId });
 
-const remove = async id => Task.deleteOne({ _id: id });
+const create = async (boardId, task) => {
+  task.boardId = boardId;
+  return Task.create(task);
+};
 
-const update = async (id, task) => Task.updateOne({ _id: id }, task);
+const deleteByBoard = async boardId =>
+  (await Task.deleteMany({ boardId })).deletedCount;
 
-module.exports = { getAll, get, save, remove, update };
+const update = async (boardId, taskId, data) =>
+  Task.updateOne({ _id: taskId }, data);
+
+const remove = async taskId =>
+  (await Task.deleteOne({ _id: taskId })).deletedCount;
+
+const deleteUsers = async userId => {
+  return Task.updateMany({ userId }, { userId: null });
+};
+
+module.exports = {
+  get,
+  create,
+  getAll,
+  getByBoard,
+  deleteByBoard,
+  update,
+  remove,
+  deleteUsers
+};

@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-const Task = new Schema(
+const taskSchema = new mongoose.Schema(
   {
     title: String,
     order: Number,
@@ -13,12 +12,11 @@ const Task = new Schema(
   { collection: 'tasks', versionKey: false }
 );
 
-const toResponse = task => {
-  const { id, title, order, description, columnId, userId, boardId } = task;
-  return { id, title, order, description, columnId, userId, boardId };
+taskSchema.statics.toResponse = task => {
+  const { title, order, description, userId, boardId, columnId } = task;
+  return { id: task._id, title, order, description, userId, boardId, columnId };
 };
 
-module.exports = {
-  Task: mongoose.model('tasks', Task),
-  toResponse
-};
+const Task = mongoose.model('Task', taskSchema);
+
+module.exports = Task;

@@ -1,20 +1,20 @@
+const uuid = require('uuid');
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-const Board = new Schema(
+const boardSchema = new mongoose.Schema(
   {
     title: String,
-    columns: Array
+    columns: Array,
+    _id: { type: String, default: uuid }
   },
-  { collection: 'boards', versionKey: false }
+  { collections: 'boards', versionKey: false }
 );
 
-const toResponse = board => {
-  const { id, title, columns } = board;
-  return { id, title, columns };
+boardSchema.statics.toResponse = user => {
+  const { title, columns } = user;
+  return { id: user._id, title, columns };
 };
 
-module.exports = {
-  Board: mongoose.model('boards', Board),
-  toResponse
-};
+const Board = mongoose.model('Board', boardSchema);
+
+module.exports = Board;
