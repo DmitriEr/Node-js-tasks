@@ -5,8 +5,10 @@ const YAML = require('yamljs');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
 const taskRouter = require('./resources/tasks/task.router');
+const loginRouter = require('./resources/login/login.router');
 const { errorHandler } = require('./resources/middlewear/error-handler');
 const { logger, logInfo } = require('./resources/middlewear/logger');
+const { auth } = require('./resources/middlewear/auth');
 
 const app = express();
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
@@ -31,8 +33,9 @@ process.on('unhandledRejection', reason => {
   logger.log('error', `Unhandled rejection detected: ${reason.message}`);
 });
 
-app.use('/users', userRouter);
-app.use('/boards', [boardRouter, taskRouter]);
+app.use('/login', loginRouter);
+app.use('/users', auth, [userRouter]);
+app.use('/boards', auth, [boardRouter, taskRouter]);
 app.use(logInfo);
 app.use(errorHandler);
 

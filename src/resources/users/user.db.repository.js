@@ -13,4 +13,30 @@ const remove = async id => (await User.deleteOne({ _id: id })).deletedCount;
 const getPasswordByUser = async (login, password) =>
   User.findOne({ login, password });
 
-module.exports = { getAll, create, get, update, remove, getPasswordByUser };
+const postLogin = async ({ login, password }) => {
+  const user = await User.findOne({ login });
+
+  if (!user) {
+    return { status: 403, result: 'No user exist' };
+  }
+
+  const compare = User.comparePassword(password, user);
+
+  if (!compare) {
+    return { status: 400, result: 'Invalid login or password' };
+  }
+
+  const token = User.generateAuthToken(user);
+
+  return { status: 200, result: { token } };
+};
+
+module.exports = {
+  getAll,
+  create,
+  get,
+  update,
+  remove,
+  getPasswordByUser,
+  postLogin
+};
